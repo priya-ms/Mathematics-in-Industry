@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Guardian - Industrial Graphite</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@500&family=Lato:wght@300;400;700&family=Merriweather:wght@300;700;900&display=swap" rel="stylesheet">
+    <style>
+        /* --- THEME VARIABLES: INDUSTRIAL GRAPHITE (SECURITY VARIANT) --- */
+        :root {
+            --bg-color: #353b48;
+            --panel-bg: #2f3640;
+            --text-main: #f5f6fa;
+            --text-muted: #dcdde1;
+            
+            /* Guardian Specific Accents */
+            --accent-primary: #48dbfb; /* Neon Cyan */
+            --accent-secondary: #0abde3; /* Deep Cyan */
+            
+            --border-color: #7f8fa6;
+            --terminal-bg: #1e272e;
+            --header-height: 15vh;
+        }
+
+        body { 
+            margin: 0; padding: 0; height: 100vh; width: 100vw; overflow: hidden;
+            background-color: var(--bg-color);
+            font-family: 'Lato', sans-serif; 
+            display: flex; flex-direction: column; align-items: center; justify-content: flex-start;
+            color: var(--text-main);
+        }
+
+        /* CANVAS BACKGROUND */
+        #matrixCanvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            opacity: 0.15;
+        }
+
+        /* FIXED HEADER SECTION */
+        .header-section { 
+            height: var(--header-height);
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center; 
+            z-index: 10; 
+            background: linear-gradient(to bottom, var(--bg-color) 80%, transparent);
+            position: relative;
+        }
+
+        .main-header { 
+            font-family: 'Merriweather', serif;
+            font-size: 4.5vh; 
+            font-weight: 900; 
+            color: var(--accent-primary); 
+            text-transform: uppercase; 
+            letter-spacing: 1px;
+            margin: 0;
+            position: relative;
+            animation: fadeInDown 1s ease-out;
+        }
+        
+        /* Glitch Effect on Main Header */
+        .main-header::before, .main-header::after {
+            content: 'Using math to keep data private';
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: transparent;
+        }
+        
+
+        /* SCHEMATIC LAYOUT */
+        .blueprint-container {
+            display: grid;
+            grid-template-columns: 1fr 15vh 1fr; 
+            gap: 4vw;
+            width: 85vw;
+            max-width: 1400px;
+            margin-top: 2vh;
+            align-items: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* COLUMNS */
+        .pillar-col, .skill-col { display: flex; flex-direction: column; gap: 2vh; justify-content: center; }
+        .skill-col { align-items: flex-start; }
+        .pillar-col { align-items: flex-end; }
+
+        /* IMPROVED LABELS */
+        .label { 
+            font-family: 'Fira Code', monospace;
+            font-size: 1.8vh; 
+            text-transform: uppercase; 
+            letter-spacing: 3px; 
+            font-weight: 700; 
+            color: var(--text-main); 
+            margin-bottom: 1.5vh; 
+            display: block; 
+            border-bottom: 2px solid var(--accent-primary); 
+            padding-bottom: 8px; 
+            width: 100%;
+            opacity: 0; 
+            animation: fadeIn 1s forwards 0.5s;
+        }
+        .pillar-col .label { text-align: right; }
+
+        /* CARDS */
+        .role-card {
+            background: var(--panel-bg); 
+            color: var(--text-main); 
+            padding: 2vh 3vh;
+            border-radius: 4px; 
+            font-weight: 700; 
+            font-size: 2vh;
+            border-right: 4px solid var(--accent-secondary); 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            width: 100%; max-width: 320px; text-align: right;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            font-family: 'Merriweather', serif;
+            transition: transform 0.3s;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: decodeIn 0.5s ease-out forwards;
+        }
+        .role-card:hover { transform: translateX(-10px); border-color: var(--accent-primary); box-shadow: 0 0 15px rgba(72, 219, 251, 0.3); }
+
+        /* SKILLS */
+        .skill-chip {
+            background: rgba(72, 219, 251, 0.05); 
+            color: var(--accent-primary); 
+            border: 1px dashed var(--accent-primary);
+            padding: 1.5vh 3vh; 
+            border-radius: 4px; 
+            font-weight: 500; 
+            font-size: 1.8vh;
+            font-family: 'Fira Code', monospace;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            opacity: 0;
+            transform: translateY(20px);
+            animation: decodeIn 0.5s ease-out forwards;
+        }
+
+        /* Staggered Animations */
+        .pillar-col .role-card:nth-child(2) { animation-delay: 0.2s; }
+        .pillar-col .role-card:nth-child(3) { animation-delay: 0.4s; }
+        .pillar-col .role-card:nth-child(4) { animation-delay: 0.6s; }
+        
+        .skill-col .skill-chip:nth-child(2) { animation-delay: 0.3s; }
+        .skill-col .skill-chip:nth-child(3) { animation-delay: 0.5s; }
+        .skill-col .skill-chip:nth-child(4) { animation-delay: 0.7s; }
+        .skill-col .skill-chip:nth-child(5) { animation-delay: 0.9s; }
+
+        /* LOGIC CORE */
+        .logic-core { 
+            display: flex; flex-direction: column; align-items: center; 
+            justify-content: center; position: relative; height: 100%; min-height: 40vh;
+        }
+        
+        .vertical-tether {
+            position: absolute; width: 4px; height: 100%;
+            background: #2f3640;
+            border-left: 1px solid var(--border-color);
+            border-right: 1px solid var(--border-color);
+            z-index: 0;
+            overflow: hidden;
+        }
+        
+        .scanner-beam {
+            position: absolute; top: 0; left: 0; width: 100%; height: 20%;
+            background: linear-gradient(to bottom, transparent, var(--accent-primary), transparent);
+            opacity: 0.5;
+            animation: scan 3s infinite linear;
+        }
+
+        .core-circle {
+            width: 12vh; height: 12vh; 
+            background: var(--panel-bg); 
+            border: 2px solid var(--accent-primary);
+            border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 900; font-size: 2.5vh; 
+            color: var(--accent-primary); 
+            font-family: 'Fira Code', monospace;
+            z-index: 5;
+            box-shadow: 0 0 20px rgba(72, 219, 251, 0.2);
+            animation: pulse 4s infinite ease-in-out, popIn 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards 0.5s;
+            position: relative;
+            opacity: 0; animation-fill-mode: forwards;
+        }
+
+        .core-circle::after {
+            content: ''; position: absolute; top: -15px; left: -15px; right: -15px; bottom: -15px;
+            border: 2px dashed var(--accent-secondary);
+            border-radius: 20%;
+            animation: rotateShield 10s linear infinite;
+        }
+
+        .core-circle::before { content: '🔒'; font-size: 3vh; margin-right: 5px; }
+
+        /* TERMINAL FOOTER */
+        .tech-footer { 
+            margin-top: 4vh; width: 60vw; max-width: 900px; z-index: 2; 
+            opacity: 0; transform: translateY(20px);
+            animation: terminalBoot 0.8s ease-out forwards 1.2s;
+        }
+        
+        .editor-window {
+            background: var(--terminal-bg); 
+            border: 1px solid var(--border-color);
+            border-radius: 6px; 
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5); 
+            font-family: 'Fira Code', monospace;
+        }
+
+        .editor-header {
+            background: #151b20; 
+            padding: 1vh 2vh; display: flex; align-items: center;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .dot { width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; opacity: 0.7;}
+        .red { background: #ff5f56; } .yellow { background: #ffbd2e; } .green { background: #27c93f; }
+        
+        .file-tab { 
+            margin-left: 15px; 
+            color: var(--text-muted); 
+            font-size: 1.4vh; 
+            background: var(--terminal-bg);
+            padding: 2px 10px;
+            border-radius: 4px 4px 0 0;
+            border-top: 2px solid var(--accent-primary);
+        }
+
+        .editor-content { 
+            padding: 2vh 3vh; 
+            font-size: 1.6vh; 
+            line-height: 1.8; 
+            color: #dcdde1;
+        }
+
+        .kwd { color: var(--accent-primary); font-weight: bold; }
+        .str { color: #fab1a0; }
+        .com { color: #57606f; font-style: italic; }
+        .typ { color: #f1c40f; }
+
+        /* KEYFRAMES */
+        @keyframes fadeInDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes decodeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes popIn { from { opacity: 0; transform: scale(0); } to { opacity: 1; transform: scale(1); } }
+        @keyframes terminalBoot { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes pulse { 0% { box-shadow: 0 0 10px rgba(72, 219, 251, 0.2); border-color: var(--accent-secondary);} 50% { box-shadow: 0 0 30px rgba(72, 219, 251, 0.5); border-color: var(--accent-primary);} 100% { box-shadow: 0 0 10px rgba(72, 219, 251, 0.2); border-color: var(--accent-secondary);} }
+        @keyframes rotateShield { 100% { transform: rotate(360deg); } }
+        @keyframes scan { 0% { top: -20%; } 100% { top: 120%; } }
+
+    </style>
+</head>
+<body>
+
+    <canvas id="matrixCanvas"></canvas>
+
+    <div class="header-section">
+        <h1 class="main-header">Using math to keep data private</h1>
+    </div>
+
+    <div class="blueprint-container">
+        
+        <div class="pillar-col">
+            <span class="label">Destination Roles</span>
+            <div class="role-card">Cryptographer</div>
+            <div class="role-card">Cyber Security Specialist</div>
+            <div class="role-card">Blockchain Developer</div>
+        </div>
+
+        <div class="logic-core">
+            <div class="vertical-tether">
+                <div class="scanner-beam"></div>
+            </div>
+            <div class="core-circle">Enc</div>
+        </div>
+
+        <div class="skill-col">
+            <span class="label">Foundation Skills</span>
+            <div class="skill-chip">Discrete Math</div>
+            <div class="skill-chip">Number Theory</div>
+            <div class="skill-chip">Abstract Algebra</div>
+            <div class="skill-chip">Complexity Theory</div>
+        </div>
+    </div>
+
+    <div class="tech-footer">
+        <div class="editor-window">
+            <div class="editor-header">
+                <div class="dot red"></div><div class="dot yellow"></div><div class="dot green"></div>
+                <div class="file-tab">encryption.cpp</div>
+            </div>
+            <div class="editor-content">
+                <span class="com">// Core Arsenal</span><br>
+                <span class="kwd">std::vector</span>&lt;<span class="typ">string</span>&gt; tools = {<br>
+                &nbsp;&nbsp;<span class="str">"C / C++"</span>,   <span class="com">// Cryptographic Primitives</span><br>
+                &nbsp;&nbsp;<span class="str">"Rust"</span>,      <span class="com">// Memory-Safe Systems</span><br>
+                &nbsp;&nbsp;<span class="str">"Python"</span>,    <span class="com">// Scripting & Modeling</span><br>
+                &nbsp;&nbsp;<span class="str">"Solidity"</span>   <span class="com">// Smart Contracts</span><br>
+                };
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('matrixCanvas');
+        const ctx = canvas.getContext('2d');
+        let width = window.innerWidth;
+        let height = window.innerHeight;
+        canvas.width = width;
+        canvas.height = height;
+        const alphabet = '21498121649148976537843214987979654632132322254521346761316467843130012345678901';
+        const fontSize = 16;
+        const columns = width / fontSize;
+        const rainDrops = [];
+        for (let x = 0; x < columns; x++) { rainDrops[x] = 1; }
+        const draw = () => {
+            ctx.fillStyle = 'rgba(53, 59, 72, 0.05)';
+            ctx.fillRect(0, 0, width, height);
+            ctx.fillStyle = '#48dbfb';
+            ctx.font = fontSize + 'px monospace';
+            for (let i = 0; i < rainDrops.length; i++) {
+                const text = alphabet.charAt(Math.floor(Math.random() * alphabet.length));
+                ctx.fillText(text, i * fontSize, rainDrops[i] * fontSize);
+                if (rainDrops[i] * fontSize > height && Math.random() > 0.975) { rainDrops[i] = 0; }
+                rainDrops[i]++;
+            }
+        };
+        setInterval(draw, 30);
+        window.addEventListener('resize', () => {
+            width = window.innerWidth; height = window.innerHeight;
+            canvas.width = width; canvas.height = height;
+        });
+    </script>
+</body>
+</html>

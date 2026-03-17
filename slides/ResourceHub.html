@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Learning Resources - Student Edition</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@500&family=Lato:wght@300;400;700&family=Merriweather:wght@300;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #353b48;
+            --panel-bg: #2f3640;
+            --text-main: #f5f6fa;
+            --text-muted: #dcdde1;
+            --accent-yellow: #e1b12c;
+            --accent-orange: #e67e22;
+            --col-code: #48dbfb;
+            --col-data: #55efc4;
+            --col-math: #a29bfe;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0IiBoZWlnaHQ9IjQiPgo8cmVjdCB3aWR0aD0iNCIgaGVpZ2h0PSI0IiBmaWxsPSIjZmZmIiBmaWxsLW9wYWNpdHk9IjAuMDUiLz4KPC9zdmc+');
+            font-family: 'Lato', sans-serif;
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .header-section { text-align: center; margin-bottom: 4vh; z-index: 2; }
+        h1 { font-family: 'Merriweather', serif; font-size: 5vh; color: var(--accent-yellow); font-weight: 900; margin: 0; text-shadow: 0 4px 10px rgba(0,0,0,0.5); }
+        p { font-family: 'Fira Code', monospace; font-size: 1.8vh; color: #e17055; margin-top: 1vh; text-transform: uppercase; }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2vw;
+            width: 90vw;
+            max-width: 1400px;
+        }
+
+        .resource-card {
+            background: var(--panel-bg);
+            border-radius: 4px;
+            padding: 2.5vh;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.05);
+            transition: transform 0.2s ease;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .resource-card:hover { transform: translateY(-5px); background: #3d4652; }
+
+        .card-top { position: absolute; top: 0; left: 0; right: 0; height: 4px; }
+        .code-type { background: var(--col-code); }
+        .data-type { background: var(--col-data); }
+        .math-type { background: var(--col-math); }
+
+        .icon-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2vh; }
+        .skill-name { font-family: 'Merriweather', serif; font-size: 2.2vh; font-weight: 700; color: var(--text-main); }
+        .tag { font-family: 'Fira Code', monospace; font-size: 1.1vh; text-transform: uppercase; padding: 4px 8px; border-radius: 2px; background: rgba(0,0,0,0.3); color: var(--text-muted); }
+
+        .course-title { font-size: 1.8vh; font-weight: 700; color: var(--text-main); margin-bottom: 0.5vh; }
+        .provider { font-size: 1.4vh; color: var(--accent-orange); font-weight: 400; margin-bottom: 1vh; }
+
+        .description { font-size: 1.5vh; color: var(--text-muted); line-height: 1.5; flex-grow: 1; padding-right: 75px; }
+
+        /* QR CODE STYLING */
+        .qr-code {
+            position: absolute;
+            bottom: 65px;
+            right: 15px;
+            width: 60px;
+            height: 60px;
+            background: #fff;
+            padding: 4px;
+            border-radius: 4px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.4);
+            border: 1px solid #ddd;
+        }
+
+        .btn {
+            margin-top: 2vh;
+            font-family: 'Fira Code', monospace;
+            font-size: 1.2vh;
+            text-align: center;
+            padding: 1vh;
+            border-radius: 4px;
+            background: rgba(255,255,255,0.05);
+            color: var(--text-main);
+            text-decoration: none;
+            border: 1px solid rgba(255,255,255,0.2);
+            text-transform: uppercase;
+        }
+
+        .resource-card:has(.code-type) .btn { color: var(--col-code); border-color: var(--col-code); }
+        .resource-card:has(.data-type) .btn { color: var(--col-data); border-color: var(--col-data); }
+        .resource-card:has(.math-type) .btn { color: var(--col-math); border-color: var(--col-math); }
+
+    </style>
+</head>
+<body>
+
+    <div class="header-section">
+        <h1>Building the Arsenal</h1>
+        <p>Reliable & Evergreen Student Learning Resources.</p>
+    </div>
+
+    <div class="grid-container">
+        
+        <div class="resource-card">
+            <div class="card-top code-type"></div>
+            <div class="icon-header">
+                <span class="skill-name">Python Core</span>
+                <span class="tag">Free</span>
+            </div>
+            <div class="course-title">Scientific Computing</div>
+            <div class="provider">💻 freeCodeCamp Project-Based</div>
+            <div class="description">Master Python via 300h of hands-on browser coding. Best for portfolios.</div>
+            <img class="qr-code" src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=https://www.freecodecamp.org/learn/scientific-computing-with-python/" alt="QR">
+            <a href="https://www.freecodecamp.org/learn/scientific-computing-with-python/" class="btn">Direct Course Link</a>
+        </div>
+
+        <div class="resource-card">
+            <div class="card-top data-type"></div>
+            <div class="icon-header">
+                <span class="skill-name">Machine Learning</span>
+                <span class="tag">NPTEL Archive</span>
+            </div>
+            <div class="course-title">ML Foundation & Depth</div>
+            <div class="provider">🇮🇳 IIT (National Resource)</div>
+            <div class="description">Access high-quality video lectures and assignments for ML engineering.</div>
+            <img class="qr-code" src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=https://nptel.ac.in/courses/106106202" alt="QR">
+            <a href="https://nptel.ac.in/courses/106106202" class="btn">View NPTEL Archive</a>
+        </div>
+
+        <div class="resource-card">
+            <div class="card-top data-type"></div>
+            <div class="icon-header">
+                <span class="skill-name">SQL & Data</span>
+                <span class="tag">Kaggle</span>
+            </div>
+            <div class="course-title">SQL / Advanced SQL</div>
+            <div class="provider">📊 Kaggle Learn (No Setup)</div>
+            <div class="description">Zero-fluff, interactive practice. Best for learning query logic quickly.</div>
+            <img class="qr-code" src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=https://www.kaggle.com/learn/intro-to-sql" alt="QR">
+            <a href="https://www.kaggle.com/learn/intro-to-sql" class="btn">Practical Exercise</a>
+        </div>
+
+        <div class="resource-card">
+            <div class="card-top code-type"></div>
+            <div class="icon-header">
+                <span class="skill-name">C++ Systems</span>
+                <span class="tag">NPTEL Archive</span>
+            </div>
+            <div class="course-title">Programming in C++</div>
+            <div class="provider">🇮🇳 IIT (Academic Standard)</div>
+            <div class="description">Deep dive into memory and object-oriented logic for high-performance apps.</div>
+            <img class="qr-code" src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=https://nptel.ac.in/courses/106105151" alt="QR">
+            <a href="https://nptel.ac.in/courses/106105151" class="btn">View C++ Course</a>
+        </div>
+
+        <div class="resource-card">
+            <div class="card-top math-type"></div>
+            <div class="icon-header">
+                <span class="skill-name">Statistics</span>
+                <span class="tag">NPTEL Archive</span>
+            </div>
+            <div class="course-title">Probability & Stats</div>
+            <div class="provider">🇮🇳 IIT (Math Foundations)</div>
+            <div class="description">Rigorous mathematical backbone required for AI and Strategic roles.</div>
+            <img class="qr-code" src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=https://nptel.ac.in/courses/111105077" alt="QR">
+            <a href="https://nptel.ac.in/courses/111105077" class="btn">View Stats Course</a>
+        </div>
+
+        <div class="resource-card">
+            <div class="card-top math-type"></div>
+            <div class="icon-header">
+                <span class="skill-name">Optimization</span>
+                <span class="tag">NPTEL Archive</span>
+            </div>
+            <div class="course-title">Intro to Optimization</div>
+            <div class="provider">🇮🇳 IIT (Solving Logic)</div>
+            <div class="description">Solve complex real-world logic puzzles using numerical methods.</div>
+            <img class="qr-code" src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=https://nptel.ac.in/courses/111105039" alt="QR">
+            <a href="https://nptel.ac.in/courses/111105039" class="btn">View Optimization</a>
+        </div>
+
+    </div>
+
+</body>
+</html>

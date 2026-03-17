@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Journey</title>
+    <!-- Importing the same fonts as your reference slide -->
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@500&family=Lato:wght@400;700&family=Merriweather:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        /* --- SHARED THEME VARIABLES (Matched to Reference) --- */
+        :root {
+            --bg-color: #1e2228;
+            --panel-bg: #2f3640;
+            --text-main: #ffffff;
+            --text-muted: #bdc3c7;
+            
+            /* Thematic Accents */
+            --phd-color: #70a1ff;      /* Academic Blue */
+            --fear-color: #ff4757;     /* Alert Red/Coral */
+            --idea-color: #fbc531;     /* Idea Gold */
+            --logic-color: #00eb84;    /* Success Green */
+            
+            --border-color: #5f6a7d;
+        }
+
+        body { 
+            background-color: var(--bg-color); 
+            /* Same subtle dot pattern background */
+            background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0IiBoZWlnaHQ9IjQiPgo8cmVjdCB3aWR0aD0iNCIgaGVpZ2h0PSI0IiBmaWxsPSIjZmZmIiBmaWxsLW9wYWNpdHk9IjAuMDMiLz4KPC9zdmc+');
+            font-family: 'Lato', sans-serif; 
+            color: var(--text-main);
+            margin: 0; height: 100vh; width: 100vw; overflow: hidden;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+        }
+
+        /* --- HEADER --- */
+        .header-section { 
+            text-align: center; 
+            margin-bottom: 6vh; 
+            opacity: 0;
+            animation: fadeInDown 1s ease-out forwards;
+        }
+        
+        h1 { 
+            font-family: 'Merriweather', serif;
+            font-size: 4.5vh;
+            color: var(--text-main); 
+            margin: 0; 
+            font-weight: 900; 
+            text-transform: uppercase; 
+            letter-spacing: 1px;
+            text-shadow: 0 4px 10px rgba(0,0,0,0.5);
+        }
+
+        .highlight-word { color: var(--phd-color); }
+
+        /* --- TIMELINE CONTAINER --- */
+        .timeline-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 2vw;
+            width: 90vw;
+            max-width: 1400px;
+        }
+
+        /* --- CARDS --- */
+        .step-card {
+            background: var(--panel-bg);
+            width: 26%;
+            height: 45vh;
+            border-radius: 8px;
+            padding: 3vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            position: relative;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+            transition: transform 0.3s ease;
+            opacity: 0;
+            animation: fadeInUp 0.8s ease-out forwards;
+        }
+
+        .step-card:hover { transform: translateY(-10px); }
+
+        /* Step Specific Borders & Delays */
+        .card-1 { border-bottom: 5px solid var(--phd-color); animation-delay: 0.2s; }
+        .card-2 { border-bottom: 5px solid var(--fear-color); animation-delay: 0.6s; }
+        .card-3 { border-bottom: 5px solid var(--logic-color); animation-delay: 1.0s; }
+
+        /* ICONS */
+        .icon-box {
+            font-size: 8vh;
+            margin-bottom: 3vh;
+            position: relative;
+        }
+
+        /* TEXT STYLING */
+        .step-title {
+            font-family: 'Merriweather', serif;
+            font-size: 2.2vh;
+            font-weight: 700;
+            margin-bottom: 1.5vh;
+            color: var(--text-main);
+        }
+
+        .step-desc {
+            font-family: 'Lato', sans-serif;
+            font-size: 1.8vh;
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+
+        .tag {
+            font-family: 'Fira Code', monospace;
+            font-size: 1.4vh;
+            margin-top: auto; /* Pushes to bottom */
+            padding: 0.8vh 1.5vh;
+            border-radius: 4px;
+            background: rgba(0,0,0,0.2);
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        /* --- ANIMATED ELEMENTS --- */
+        /* 1. Floating Cap/Abstract Shape */
+        .float-anim { animation: float 3s ease-in-out infinite; }
+        
+        /* 2. Shaking Fear */
+        .shake-anim { animation: shake 5s ease-in-out infinite; }
+
+        /* 3. Glowing Bulb */
+        .glow-anim { 
+            filter: drop-shadow(0 0 10px var(--idea-color));
+            animation: pulse 2s infinite; 
+        }
+
+        /* --- ARROWS --- */
+        .arrow {
+            font-size: 3vh;
+            color: var(--border-color);
+            opacity: 0;
+            animation: fadeIn 1s ease forwards;
+        }
+        .arrow-1 { animation-delay: 0.5s; }
+        .arrow-2 { animation-delay: 0.9s; }
+
+        /* --- KEYFRAMES --- */
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeInDown { from { opacity: 0; transform: translateY(-30px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { to { opacity: 1; } }
+        
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+        
+        @keyframes shake { 
+            0%, 90%, 100% { transform: rotate(0deg); } 
+            92% { transform: rotate(-5deg); } 
+            94% { transform: rotate(5deg); } 
+            96% { transform: rotate(-5deg); } 
+            98% { transform: rotate(5deg); } 
+        }
+        
+        @keyframes pulse {
+            0% { filter: drop-shadow(0 0 5px var(--idea-color)); transform: scale(1); }
+            50% { filter: drop-shadow(0 0 20px var(--idea-color)); transform: scale(1.05); }
+            100% { filter: drop-shadow(0 0 5px var(--idea-color)); transform: scale(1); }
+        }
+
+        /* --- NAVIGATION BUTTON --- */
+        .nav-btn {
+            position: fixed; bottom: 4vh; right: 4vh;
+            background: transparent;
+            border: 2px solid var(--text-muted);
+            color: var(--text-muted);
+            padding: 1vh 2vh;
+            font-family: 'Fira Code', monospace;
+            cursor: pointer;
+            transition: 0.3s;
+            opacity: 0; animation: fadeIn 1s forwards 2s;
+        }
+        .nav-btn:hover { border-color: var(--logic-color); color: var(--logic-color); }
+
+    </style>
+</head>
+<body>
+
+    <div class="header-section">
+        <h1>From <span class="highlight-word">Abstract</span> to Application</h1>
+    </div>
+
+    <div class="timeline-container">
+
+        <!-- STEP 1: PhD -->
+        <div class="step-card card-1">
+            <div class="icon-box float-anim">🎓</div>
+            <div class="step-title" style="color: var(--phd-color);">PhD in Topology</div>
+            <div class="step-desc">
+                Living in the abstract world of manifolds, knot theory, and dimensional spaces. 
+                <br><br>
+                <em>"Does this even apply to real life?"</em>
+            </div>
+            <div class="tag" style="color: var(--phd-color);">// THE BACKGROUND</div>
+        </div>
+
+        <!-- ARROW -->
+        <div class="arrow arrow-1">➔</div>
+
+        <!-- STEP 2: FEAR -->
+        <div class="step-card card-2">
+            <div class="icon-box shake-anim">🚧</div>
+            <div class="step-title" style="color: var(--fear-color);">The Fear</div>
+            <div class="step-desc">
+                Standing at the crossroads. The overwhelming thought that <strong>Academia</strong> is the only path.
+                <br><br>
+                <em>"Am I too theoretical for a job?"</em>
+            </div>
+            <div class="tag" style="color: var(--fear-color);">// THE DOUBT</div>
+        </div>
+
+        <!-- ARROW -->
+        <div class="arrow arrow-2">➔</div>
+
+        <!-- STEP 3: REALIZATION -->
+        <div class="step-card card-3">
+            <div class="icon-box glow-anim">💡</div>
+            <div class="step-title" style="color: var(--idea-color);">The Realization</div>
+            <div class="step-desc">
+                Industry doesn't hire you for definitions. They hire you for <strong>Logic</strong>.
+                <br><br>
+                Your ability to structure chaos is your superpower.
+            </div>
+            <div class="tag" style="color: var(--logic-color); border: 1px solid var(--logic-color);">
+                return SUCCESS;
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Navigation Script -->
+    <button class="nav-btn" onclick="window.parent.postMessage('land-map.html', '*')">
+        NEXT: CAREER MAP ->
+    </button>
+
+</body>
+</html>

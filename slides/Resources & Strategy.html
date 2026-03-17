@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>The Internship Filter - Industrial Graphite</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@500&family=Lato:wght@300;400;700&family=Merriweather:wght@300;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #1e272e;
+            --panel-bg: rgba(47, 54, 64, 0.9);
+            --text-main: #f5f6fa;
+            --text-muted: #b2bec3;
+            --accent-crit: #ff7675; /* Essential Red */
+            --accent-plus: #55efc4; /* Advantage Green */
+            --header-height: 25vh;
+        }
+
+        body {
+            margin: 0; height: 100vh; width: 100vw; overflow: hidden;
+            background-color: var(--bg-color);
+            font-family: 'Lato', sans-serif;
+            display: flex; flex-direction: column; align-items: center;
+            color: var(--text-main);
+        }
+
+        .header-section {
+            height: var(--header-height);
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            z-index: 10;
+        }
+
+        h1 {
+            font-family: 'Merriweather', serif;
+            font-size: 4.5vh; color: #fbc531;
+            text-transform: uppercase; margin: 0.2vh 0;
+            letter-spacing: 1px;
+        }
+
+        .tagline {
+            font-family: 'Fira Code', monospace;
+            font-size: 1.8vh; color: #e17055;
+            text-transform: uppercase; margin-top: 0.5vh;
+        }
+
+        .filter-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4.5vw;
+            width: 70vw;
+            margin-top: 1.5vh;
+            z-index: 2;
+        }
+
+        .category-box { display: flex; flex-direction: column; gap: 2vh; }
+
+        .label {
+            font-family: 'Fira Code', monospace;
+            font-size: 1.6vh; text-transform: uppercase; letter-spacing: 3px;
+            padding-bottom: 1vh; border-bottom: 2px solid currentColor;
+            margin-bottom: 1vh; font-weight: 700;
+        }
+
+        .essential { color: var(--accent-crit); }
+        .advantage { color: var(--accent-plus); }
+
+        .role-entry {
+            background: var(--panel-bg);
+            padding: 2.2vh 2.5vh;
+            border-radius: 4px;
+            border-left: 4px solid currentColor;
+            position: relative;
+            transition: all 0.3s ease;
+            opacity: 0; transform: translateY(20px);
+            animation: slideUp 0.5s forwards;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .role-entry:hover { transform: translateX(8px); background: #2d3436; }
+
+        .role-name {
+            font-family: 'Merriweather', serif;
+            font-size: 2.2vh; font-weight: 700; margin-bottom: 0.8vh;
+            color: var(--text-main);
+        }
+
+        .role-reason {
+            font-size: 1.8vh; color: var(--text-muted); line-height: 1.5;
+            font-weight: 400;
+        }
+
+        .role-reason b { color: var(--text-main); }
+
+        @keyframes slideUp { to { opacity: 1; transform: translateY(0); } }
+
+        /* Animation Delays */
+        .role-entry:nth-child(2) { animation-delay: 0.2s; }
+        .role-entry:nth-child(3) { animation-delay: 0.4s; }
+        .role-entry:nth-child(4) { animation-delay: 0.6s; }
+    </style>
+</head>
+<body>
+
+    <div class="header-section">
+        <h1>Experience Prerequisites</h1>
+        <div class="tagline">Why some roles require a "Test Drive" first</div>
+    </div>
+
+    <div class="filter-grid">
+        
+        <div class="category-box essential">
+            <div class="label">Internship is Essential</div>
+            
+            <div class="role-entry">
+                <div class="role-name">AI Architect</div>
+                <div class="role-reason">You need to learn how to use <b>expensive company supercomputers</b>. This hardware isn't available at home or in most classrooms.</div>
+            </div>
+
+            <div class="role-entry">
+                <div class="role-name">The Strategist</div>
+                <div class="role-reason">Mistakes here cost <b>real money</b>. Companies want to see that you can handle high-pressure trading environments without panicking.</div>
+            </div>
+
+            <div class="role-entry">
+                <div class="role-name">The Optimizer</div>
+                <div class="role-reason">School math is "perfect," but <b>real-world data is messy</b>. You need to see how a real factory or warehouse actually operates to fix it.</div>
+            </div>
+        </div>
+
+        <div class="category-box advantage">
+            <div class="label">Major Competitive Benefit</div>
+
+            <div class="role-entry">
+                <div class="role-name">The Predictor</div>
+                <div class="role-reason">Knowing the math is one thing, but knowing <b>how a business works</b> (like Retail or Medicine) makes your predictions actually useful.</div>
+            </div>
+
+            <div class="role-entry">
+                <div class="role-name">The Simulator</div>
+                <div class="role-reason">You can learn the software alone, but <b>working in a team</b> to build a massive virtual world is a skill that makes you hireable instantly.</div>
+            </div>
+
+            <div class="role-entry">
+                <div class="role-name">The Guardian</div>
+                <div class="role-reason">It proves you are <b>trustworthy</b>. An internship shows you can protect sensitive data without accidentally breaking the company’s systems.</div>
+            </div>
+        </div>
+
+    </div>
+
+</body>
+</html>

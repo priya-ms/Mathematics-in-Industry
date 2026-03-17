@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Premium Blackboard Options</title>
+    
+    <!-- Importing Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code&family=Lato:wght@300;400;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Merriweather:ital,wght@0,300;0,700;1,300&display=swap" rel="stylesheet">
+
+    <style>
+        /* BASE SETUP */
+        * { box-sizing: border-box; }
+        body, html { margin: 0; padding: 0; height: 100%; width: 100%; overflow: hidden; }
+        
+        .slide-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: 1fr 1fr;
+            height: 100vh;
+            width: 100vw;
+        }
+
+        .theme-card {
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+            /* Subtle Noise Texture for realism */
+            background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0IiBoZWlnaHQ9IjQiPgo8cmVjdCB3aWR0aD0iNCIgaGVpZ2h0PSI0IiBmaWxsPSIjZmZmIiBmaWxsLW9wYWNpdHk9IjAuMDUiLz4KPC9zdmc+');
+        }
+
+        h2 { 
+            font-family: 'Merriweather', serif; 
+            margin-top: 0; 
+            font-size: 2rem; 
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.5px;
+        }
+        
+        p { 
+            font-family: 'Lato', sans-serif; 
+            font-size: 1rem; 
+            line-height: 1.6; 
+            opacity: 0.9;
+        }
+
+        .tagline {
+            font-style: italic;
+            font-family: 'Playfair Display', serif;
+            margin-bottom: 15px;
+            display: block;
+            font-size: 1.1rem;
+        }
+
+        .chalk-box {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 6px;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.9rem;
+            background: rgba(0,0,0,0.2);
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        .label {
+            position: absolute; top: 20px; right: 20px; font-size: 0.7rem;
+            text-transform: uppercase; padding: 5px 10px; border-radius: 20px;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        /* --- OPTION 5: MIDNIGHT OBSIDIAN --- */
+        .opt-obsidian {
+            background-color: #111111; /* Almost Black */
+            color: #ecf0f1;
+        }
+        .opt-obsidian h2 { color: #ffffff; text-shadow: 0 0 10px rgba(255,255,255,0.3); }
+        .opt-obsidian .tagline { color: #00d2ff; /* Electric Blue */ }
+        .opt-obsidian .chalk-box { border-left: 3px solid #ff007f; /* Hot Pink */ color: #b2bec3; }
+        .opt-obsidian .label { border: 1px solid #00d2ff; color: #00d2ff; }
+
+        /* --- OPTION 6: DEEP TEAL --- */
+        .opt-teal {
+            background-color: #0d3b3e; /* Rich Teal */
+            color: #e0f2f1;
+        }
+        .opt-teal h2 { color: #f1c40f; /* Gold */ font-weight: 300; }
+        .opt-teal .tagline { color: #81ecec; /* Pale Cyan */ }
+        .opt-teal .chalk-box { border-left: 3px solid #f1c40f; color: #b2bec3; }
+        .opt-teal .label { background: rgba(241, 196, 15, 0.2); color: #f1c40f; }
+
+        /* --- OPTION 7: ROYAL PLUM --- */
+        .opt-plum {
+            background-color: #2c0e37; /* Deep Purple */
+            color: #f3e5f5;
+        }
+        .opt-plum h2 { color: #e056fd; /* Light Violet */ }
+        .opt-plum .tagline { color: #badc58; /* Lime Green */ }
+        .opt-plum .chalk-box { border-left: 3px solid #badc58; color: #e1bee7; }
+        .opt-plum .label { border: 1px solid #e056fd; color: #e056fd; }
+
+        /* --- OPTION 8: GRAPHITE INDUSTRIAL --- */
+        .opt-graphite {
+            background-color: #353b48; /* Cool Grey */
+            color: #f5f6fa;
+        }
+        .opt-graphite h2 { color: #e1b12c; /* Warm Yellow */ text-transform: uppercase; font-size: 1.8rem; }
+        .opt-graphite .tagline { color: #e67e22; /* Safety Orange */ }
+        .opt-graphite .chalk-box { border-left: 3px solid #e67e22; background: rgba(0,0,0,0.3); }
+        .opt-graphite .label { background: #e67e22; color: #fff; }
+
+    </style>
+</head>
+<body>
+
+    <div class="slide-container">
+
+        <!-- Option 5 -->
+        <div class="theme-card opt-obsidian">
+            <span class="label">Option A: Obsidian</span>
+            <h2>Midnight Obsidian</h2>
+            <span class="tagline">The Modern "Dark Mode"</span>
+            <p>High contrast. Best for projectors in bright rooms. Feels like a tech product launch.</p>
+            <div class="chalk-box">
+                > System.init()<br>
+                > Loading Neural Network...
+            </div>
+        </div>
+
+        <!-- Option 6 -->
+        <div class="theme-card opt-teal">
+            <span class="label">Option B: Teal</span>
+            <h2>Deep Teal</h2>
+            <span class="tagline">The Academic Journal</span>
+            <p>Rich, calming, and intellectual. Feels expensive and well-researched.</p>
+            <div class="chalk-box">
+                Theorem 1.2:<br>
+                Let $\Omega$ be a closed set...
+            </div>
+        </div>
+
+        <!-- Option 7 -->
+        <div class="theme-card opt-plum">
+            <span class="label">Option C: Plum</span>
+            <h2>Royal Plum</h2>
+            <span class="tagline">The Creative Mind</span>
+            <p>Unique and memorable. Breaks the mold of "boring math." Great for abstract topics.</p>
+            <div class="chalk-box">
+                Topology:<br>
+                Mapping the unknown manifolds.
+            </div>
+        </div>
+
+        <!-- Option 8 -->
+        <div class="theme-card opt-graphite">
+            <span class="label">Option D: Graphite</span>
+            <h2>Industrial Graphite</h2>
+            <span class="tagline">Applied Mathematics</span>
+            <p>Practical and sturdy. Looks like concrete and steel. Perfect for Engineering/Industry.</p>
+            <div class="chalk-box">
+                Safety Factor = 2.5<br>
+                Max Load = 5000 N
+            </div>
+        </div>
+
+    </div>
+
+</body>
+</html>

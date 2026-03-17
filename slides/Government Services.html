@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Government Services - Industrial Graphite</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@500&family=Lato:wght@300;400;700&family=Merriweather:wght@300;700;900&display=swap" rel="stylesheet">
+    <style>
+        /* --- THEME VARIABLES: INDUSTRIAL GRAPHITE --- */
+        :root {
+            --bg-color: #353b48;
+            --panel-bg: #2f3640;
+            --text-main: #f5f6fa;
+            --text-muted: #dcdde1;
+            --accent-primary: #6d71e5; /* Neon Blue */
+            --accent-secondary: #4834d4; /* Deep Cobalt */
+            --border-color: #7f8fa6;
+            --terminal-bg: #1e272e;
+            --header-height: 15vh;
+        }
+
+        body { 
+            margin: 0; padding: 0; height: 100vh; width: 100vw; overflow: hidden;
+            background-color: var(--bg-color);
+            font-family: 'Lato', sans-serif; 
+            display: flex; flex-direction: column; align-items: center; justify-content: flex-start;
+            color: var(--text-main);
+        }
+
+        /* CANVAS BACKGROUND */
+        #globeCanvas {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 0;
+            opacity: 0.15;
+        }
+
+        /* FIXED HEADER SECTION */
+        .header-section { 
+            height: var(--header-height);
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center; 
+            z-index: 10; 
+            background: linear-gradient(to bottom, var(--bg-color) 80%, transparent);
+            position: relative;
+        }
+
+        .main-header { 
+            font-family: 'Merriweather', serif;
+            font-size: 4.5vh; 
+            font-weight: 900; 
+                color: var(--accent-primary); 
+            text-transform: uppercase; 
+            letter-spacing: 1px;
+            margin: 0;
+            animation: fadeInDown 1s ease-out;
+        }
+        
+        .tagline-sub { 
+            font-size: 1.8vh; 
+            color: var(--accent-orange); 
+            font-weight: 500; 
+            font-family: 'Fira Code', monospace; 
+            text-transform: uppercase;
+            margin-top: 1vh;
+            letter-spacing: 2px;
+        }
+
+        /* SCHEMATIC LAYOUT */
+        .blueprint-container {
+            display: grid;
+            grid-template-columns: 1fr 15vh 1fr; 
+            gap: 4vw;
+            width: 85vw;
+            max-width: 1400px;
+            margin-top: 2vh;
+            align-items: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* COLUMNS */
+        .pillar-col, .skill-col { display: flex; flex-direction: column; gap: 2vh; justify-content: center; }
+        .skill-col { align-items: flex-start; }
+        .pillar-col { align-items: flex-end; }
+
+        /* STANDARDIZED LABELS */
+        .label { 
+            font-family: 'Fira Code', monospace;
+            font-size: 1.8vh; 
+            text-transform: uppercase; 
+            letter-spacing: 3px; 
+            font-weight: 700; 
+            color: var(--text-main); 
+                margin-bottom: 1vh; 
+            display: block; 
+            border-bottom: 2px solid var(--accent-primary); 
+            padding-bottom: 8px; 
+            width: 100%;
+            opacity: 0; 
+            animation: fadeIn 1s forwards 0.5s;
+        }
+        .pillar-col .label { text-align: right; }
+
+        /* CARDS */
+        .role-card {
+            background: var(--panel-bg); 
+            color: var(--text-main); 
+            padding: 2vh 3vh;
+            border-radius: 4px; 
+            font-weight: 700; 
+            font-size: 2vh;
+                border-right: 4px solid var(--accent-primary); 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            width: 100%; max-width: 300px; text-align: right;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            font-family: 'Merriweather', serif;
+            transition: transform 0.3s;
+            opacity: 0; transform: translateY(20px);
+            animation: slideUp 0.5s ease-out forwards;
+        }
+        .role-card:hover { transform: translateX(-10px); border-color: var(--accent-yellow); box-shadow: 0 0 15px rgba(230, 126, 34, 0.4); }
+
+        /* SKILLS */
+        .skill-chip {
+            background: rgba(52, 152, 219, 0.08); 
+            color: var(--accent-primary); 
+            border: 1px dashed var(--accent-primary);
+            padding: 1.5vh 3vh; 
+            border-radius: 4px; 
+            font-weight: 500; 
+            font-size: 1.8vh;
+            font-family: 'Fira Code', monospace;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            opacity: 0; transform: translateY(20px);
+            animation: slideUp 0.5s ease-out forwards;
+        }
+
+        /* LOGIC CORE */
+        .logic-core { 
+            display: flex; flex-direction: column; align-items: center; 
+            justify-content: center; position: relative; height: 100%; min-height: 40vh;
+        }
+        .vertical-tether {
+            position: absolute; width: 6px; height: 100%;
+            background: #2f3640; border-left: 1px solid var(--border-color); border-right: 1px solid var(--border-color);
+            z-index: 0;
+        }
+        .data-particle {
+            position: absolute; width: 4px; height: 4px; background: var(--accent-primary);
+            border-radius: 50%; bottom: 0; animation: upload 2s infinite linear;
+        }
+        .core-circle {
+            width: 12vh; height: 12vh; background: var(--panel-bg); 
+            border: 2px solid var(--accent-primary); border-radius: 50%; 
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 900; font-size: 3vh; color: var(--accent-primary); 
+            font-family: 'Merriweather', serif; z-index: 5;
+            box-shadow: 0 0 20px rgba(52, 152, 219, 0.3);
+            position: relative; opacity: 0;
+            animation: pulse 4s infinite ease-in-out, popIn 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards 0.5s;
+        }
+
+        /* TERMINAL FOOTER */
+        .tech-footer { 
+            margin-top: 4vh; width: 60vw; max-width: 900px; z-index: 2; 
+            opacity: 0; animation: terminalBoot 0.8s ease-out forwards 1.2s;
+        }
+        .editor-window {
+            background: var(--terminal-bg); border: 1px solid var(--border-color);
+            border-radius: 6px; overflow: hidden; font-family: 'Fira Code', monospace;
+        }
+        .editor-header {
+            background: #151b20; padding: 1vh 2vh; display: flex; align-items: center;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .dot { width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; }
+        .red { background: #ff5f56; } .yellow { background: #ffbd2e; } .green { background: #27c93f; }
+        .file-tab { margin-left: 15px; color: var(--text-muted); font-size: 1.4vh; border-top: 2px solid var(--accent-primary); padding: 2px 10px; }
+        .editor-content { padding: 2vh 3vh; font-size: 1.6vh; line-height: 1.8; color: #dcdde1; white-space: pre; }
+
+        /* Animations */
+        @keyframes fadeInDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes popIn { from { opacity: 0; transform: scale(0); } to { opacity: 1; transform: scale(1); } }
+        @keyframes terminalBoot { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes upload { 0% { bottom: 0; opacity: 1; } 100% { bottom: 100%; opacity: 0; } }
+        @keyframes pulse { 0%, 100% { box-shadow: 0 0 20px rgba(52, 152, 219, 0.3); } 50% { box-shadow: 0 0 40px rgba(52, 152, 219, 0.6); } }
+
+    </style>
+</head>
+<body>
+
+    <canvas id="globeCanvas"></canvas>
+
+    <div class="header-section">
+        <h1 class="main-header">Turning Precision into Progress</h1>
+    </div>
+
+    <div class="blueprint-container">
+        
+        <div class="pillar-col">
+            <span class="label">Destination Roles</span>
+            <div class="role-card">Scientific Officer (ISRO)</div>
+            <div class="role-card">Statistical Advisor</div>
+            <div class="role-card">Economic Policy Lead</div>
+            <div class="role-card">ISS Officer</div>
+        </div>
+
+        <div class="logic-core">
+            <div class="vertical-tether"></div>
+            <div class="data-particle" style="animation-delay: 0s;"></div>
+            <div class="data-particle" style="animation-delay: 0.5s;"></div>
+            <div class="data-particle" style="animation-delay: 1.0s;"></div>
+            <div class="core-circle">Σx</div>
+        </div>
+
+        <div class="skill-col">
+            <span class="label">Foundation Skills</span>
+            <div class="skill-chip">Statistics</div>
+            <div class="skill-chip">Inference & Testing</div>
+            <div class="skill-chip">Econometrics</div>
+            <div class="skill-chip">Survey Sampling</div>
+        </div>
+    </div>
+
+    <div class="tech-footer">
+        <div class="editor-window">
+            <div class="editor-header">
+                <div class="dot red"></div><div class="dot yellow"></div><div class="dot green"></div>
+                <div class="file-tab">policy_analysis.R</div>
+            </div>
+            <div class="editor-content" id="typewriter"></div>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('globeCanvas');
+        const ctx = canvas.getContext('2d');
+        let width, height, points = [];
+
+        function resize() {
+            width = window.innerWidth; height = window.innerHeight;
+            canvas.width = width; canvas.height = height;
+            initGlobe();
+        }
+        window.addEventListener('resize', resize);
+
+        class GlobePoint {
+            constructor() {
+                this.theta = Math.random() * Math.PI * 2;
+                this.phi = Math.acos((Math.random() * 2) - 1);
+                this.radius = Math.min(width, height) * 0.4;
+            }
+            draw(rotation) {
+                const x = this.radius * Math.sin(this.phi) * Math.cos(this.theta + rotation);
+                const y = this.radius * Math.sin(this.phi) * Math.sin(this.theta + rotation);
+                const z = this.radius * Math.cos(this.phi);
+                const scale = 300 / (300 + z);
+                const px = width/2 + x * scale;
+                const py = height/2 + y * scale;
+                if(z > -50) {
+                    ctx.beginPath();
+                    ctx.arc(px, py, 1.5 * scale, 0, Math.PI * 2);
+                    ctx.fillStyle = '#e1b12c';
+                    ctx.globalAlpha = (z + 300) / 600 * 0.5;
+                    ctx.fill();
+                }
+            }
+        }
+
+        function initGlobe() {
+            points = [];
+            for(let i=0; i<300; i++) points.push(new GlobePoint());
+        }
+
+        let rot = 0;
+        function animate() {
+            ctx.clearRect(0, 0, width, height);
+            points.forEach(p => p.draw(rot));
+            rot += 0.002;
+            requestAnimationFrame(animate);
+        }
+
+        resize(); animate();
+
+        const codeHTML = `<span style="color: #57606f"># Public Sector Toolkit</span>
+<span style="color: #e67e22">"R / STATA"</span>: <span style="color: #57606f">// Econometric Modeling</span>
+<span style="color: #e67e22">"Python"</span>:    <span style="color: #57606f">// Data Automation</span>
+<span style="color: #e67e22">"SQL"</span>:       <span style="color: #57606f">// Survey Querying</span>`;
+
+        setTimeout(() => { document.getElementById('typewriter').innerHTML = codeHTML; }, 1500);
+    </script>
+</body>
+</html>

@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>The Intellectual Foundation - Industrial Graphite</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@500&family=Lato:wght@300;400;700&family=Merriweather:wght@300;700;900&display=swap" rel="stylesheet">
+    <style>
+        /* --- THEME VARIABLES: INDUSTRIAL GRAPHITE --- */
+        :root {
+            --bg-color: #1e272e;       /* Deep Black-Blue Background */
+            --panel-bg: rgba(47, 54, 64, 0.85); /* Semi-transparent Panel */
+            --text-main: #f5f6fa;      /* Off-White */
+            --text-muted: #b2bec3;     /* Muted Grey */
+            
+            --accent-yellow: #fbc531;
+            --accent-orange: #e1b12c;
+
+            /* Category Colors (Standardized with Deck Accents) */
+            --col-stat: #a29bfe;       /* Uncertainty (Purple) */
+            --col-pure: #74b9ff;       /* Structure (Blue) */
+            --col-app: #55efc4;        /* Computation (Green) */
+            
+            --header-height: 15vh;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            font-family: 'Lato', sans-serif;
+            margin: 0;
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            color: var(--text-main);
+        }
+
+        /* CANVAS BACKGROUND */
+        #mathCanvas {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 0;
+            opacity: 0.12; /* Subtle floating symbols */
+        }
+
+        /* FIXED HEADER SECTION */
+        .header-section {
+            height: var(--header-height);
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            z-index: 10;
+            background: linear-gradient(to bottom, var(--bg-color) 80%, transparent);
+        }
+
+        h1 {
+            font-family: 'Merriweather', serif;
+            font-size: 4.5vh;
+            color: var(--accent-yellow);
+            font-weight: 900;
+            margin-top: 70px;
+            margin-bottom: 0;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            animation: fadeInDown 1s ease-out;
+        }
+
+        .tagline {
+            font-family: 'Fira Code', monospace;
+            font-size: 1.8vh;
+            color: #e17055;
+            margin-bottom: 50px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        /* MASTER GRID LAYOUT */
+        .master-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 2.5vw;
+            width: 90vw;
+            max-width: 1600px;
+            margin-top: 2vh;
+            z-index: 2;
+        }
+
+        /* COLUMNS */
+        .column {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5vh;
+        }
+
+        .col-header {
+            font-family: 'Fira Code', monospace;
+            font-size: 1.8vh;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            font-weight: 700;
+            padding-bottom: 1.5vh;
+            border-bottom: 2px solid currentColor;
+            margin-bottom: 1.5vh;
+            text-align: center;
+            opacity: 0;
+            animation: fadeIn 1s forwards 0.5s;
+        }
+
+        /* SUBJECT CARDS */
+        .subject-card {
+            background: var(--panel-bg);
+            backdrop-filter: blur(5px);
+            border-radius: 4px;
+            padding: 1.8vh 2vh;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            border-left: 4px solid transparent; 
+            border-top: 1px solid rgba(255,255,255,0.05);
+            transition: all 0.3s ease;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: slideUpFade 0.5s ease-out forwards;
+        }
+
+        .subject-card:hover {
+            transform: translateY(-5px);
+            background: #2d3436;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+        }
+
+        .subject-title {
+            font-family: 'Merriweather', serif;
+            font-size: 1.9vh;
+            font-weight: 700;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .subject-meta {
+            font-size: 1.5vh;
+            color: var(--text-muted);
+            margin-top: 1vh;
+            font-weight: 400;
+        }
+
+        .symbol { 
+            font-family: 'Fira Code', monospace;
+            font-size: 1.4vh;
+            background: rgba(255,255,255,0.05);
+            padding: 2px 8px;
+            border-radius: 4px;
+            border: 1px solid currentColor;
+        }
+
+        /* COLUMN SPECIFIC COLORS */
+        .col-stat { color: var(--col-stat); }
+        .col-stat .subject-card { border-left-color: var(--col-stat); }
+        
+        .col-pure { color: var(--col-pure); }
+        .col-pure .subject-card { border-left-color: var(--col-pure); }
+
+        .col-app { color: var(--col-app); }
+        .col-app .subject-card { border-left-color: var(--col-app); }
+
+        /* ANIMATION STAGGERING */
+        .col-stat .subject-card:nth-child(2) { animation-delay: 0.6s; }
+        .col-stat .subject-card:nth-child(3) { animation-delay: 0.7s; }
+        .col-stat .subject-card:nth-child(4) { animation-delay: 0.8s; }
+        .col-stat .subject-card:nth-child(5) { animation-delay: 0.9s; }
+
+        .col-pure .subject-card:nth-child(2) { animation-delay: 0.7s; }
+        .col-pure .subject-card:nth-child(3) { animation-delay: 0.8s; }
+        .col-pure .subject-card:nth-child(4) { animation-delay: 0.9s; }
+        .col-pure .subject-card:nth-child(5) { animation-delay: 1.0s; }
+        .col-pure .subject-card:nth-child(6) { animation-delay: 1.1s; }
+
+        .col-app .subject-card:nth-child(2) { animation-delay: 0.8s; }
+        .col-app .subject-card:nth-child(3) { animation-delay: 0.9s; }
+        .col-app .subject-card:nth-child(4) { animation-delay: 1.0s; }
+        .col-app .subject-card:nth-child(5) { animation-delay: 1.1s; }
+        .col-app .subject-card:nth-child(6) { animation-delay: 1.2s; }
+
+        @keyframes fadeInDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideUpFade { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+
+    </style>
+</head>
+<body>
+
+    <canvas id="mathCanvas"></canvas>
+
+    <div class="header-section">
+        <h1>The Intellectual Foundation</h1>
+        <div class="tagline">The mathematical framework powering modern technology</div>
+    </div>
+
+    <div class="master-grid">
+        
+        <div class="column col-stat">
+            <div class="col-header">Uncertainty & Risk</div>
+
+            <div class="subject-card">
+                <div class="subject-title">Probability Theory <span class="symbol">P(A)</span></div>
+                <div class="subject-meta">Risk Management, Game Design, AI</div>
+            </div>
+
+            <div class="subject-card">
+                <div class="subject-title">Statistical Inference <span class="symbol">H₀</span></div>
+                <div class="subject-meta">Data Science, A/B Testing, Research</div>
+            </div>
+
+            <div class="subject-card">
+                <div class="subject-title">Stochastic Processes <span class="symbol">Xₜ</span></div>
+                <div class="subject-meta">Stock Markets, Queueing Systems</div>
+            </div>
+
+            <div class="subject-card">
+                <div class="subject-title">Time-Series Analysis <span class="symbol">ARIMA</span></div>
+                <div class="subject-meta">Forecasting, Weather Models, Sales</div>
+            </div>
+        </div>
+
+        <div class="column col-pure">
+            <div class="col-header">Structure & Logic</div>
+
+            <div class="subject-card">
+                <div class="subject-title">Linear Algebra <span class="symbol">Ax=b</span></div>
+                <div class="subject-meta">Foundations of AI, Graphics, Quantum</div>
+            </div>
+
+            <div class="subject-card">
+                <div class="subject-title">Multivariable Calculus <span class="symbol">∇f</span></div>
+                <div class="subject-meta">Optimization Engines, Physics Sims</div>
+            </div>
+
+            <div class="subject-card">
+                <div class="subject-title">Differential Equations <span class="symbol">∀x</span></div>
+                <div class="subject-meta">Algorithms, Logic Gates, Databases</div>
+            </div>
+
+            <div class="subject-card">
+                <div class="subject-title">Abstract Algebra <span class="symbol">G</span></div>
+                <div class="subject-meta">Cryptography, Coding Theory, Symmetry</div>
+            </div>
+
+            <div class="subject-card">
+                <div class="subject-title">Real Analysis <span class="symbol">ε-δ</span></div>
+                <div class="subject-meta">Rigorous Proofs, Financial Modeling</div>
+            </div>
+        </div>
+
+        <div class="column col-app">
+            <div class="col-header">Computation & Action</div>
+
+            <div class="subject-card">
+                <div class="subject-title">Optimization <span class="symbol">min f</span></div>
+                <div class="subject-meta">Logistics, AI Training, Routing</div>
+            </div>
+
+            <div class="subject-card">
+                <div class="subject-title">Graph Theory <span class="symbol">G(V,E)</span></div>
+                <div class="subject-meta">Social Networks, Maps/GPS, Networks</div>
+            </div>
+
+            <div class="subject-card">
+                <div class="subject-title">Numerical Analysis <span class="symbol">O(n)</span></div>
+                <div class="subject-meta">Simulations, Engineering Accuracy</div>
+            </div>
+
+            <div class="subject-card">
+                <div class="subject-title">Combinatorics <span class="symbol">nCk</span></div>
+                <div class="subject-meta">Scheduling, Complexity Theory</div>
+            </div>
+
+            <div class="subject-card">
+                <div class="subject-title">Number Theory <span class="symbol">mod n</span></div>
+                <div class="subject-meta">Encryption, Blockchain Security</div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        const canvas = document.getElementById('mathCanvas');
+        const ctx = canvas.getContext('2d');
+        let width, height, symbols = [];
+        const chars = ['∑', '∫', '∂', '∇', '∏', '√', '∞', 'π', 'θ', 'λ', 'μ', 'σ', 'Ω', '∀', '∃', '∈', '≠', '≈', '≤', '≥'];
+
+        function resize() {
+            width = window.innerWidth; height = window.innerHeight;
+            canvas.width = width; canvas.height = height;
+            initSymbols();
+        }
+        window.addEventListener('resize', resize);
+
+        class MathSymbol {
+            constructor() {
+                this.x = Math.random() * width;
+                this.y = Math.random() * height;
+                this.char = chars[Math.floor(Math.random() * chars.length)];
+                this.size = Math.random() * 20 + 10;
+                this.speed = Math.random() * 0.5 + 0.2;
+                this.opacity = Math.random() * 0.3 + 0.1;
+            }
+            update() {
+                this.y -= this.speed;
+                if (this.y < -50) {
+                    this.y = height + 50;
+                    this.x = Math.random() * width;
+                }
+            }
+            draw() {
+                ctx.font = `${this.size}px 'Fira Code'`;
+                ctx.fillStyle = `rgba(255, 255, 255, ${this.opacity})`;
+                ctx.fillText(this.char, this.x, this.y);
+            }
+        }
+
+        function initSymbols() {
+            symbols = [];
+            for(let i=0; i<50; i++) symbols.push(new MathSymbol());
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, width, height);
+            symbols.forEach(s => { s.update(); s.draw(); });
+            requestAnimationFrame(animate);
+        }
+
+        resize(); animate();
+    </script>
+</body>
+</html>

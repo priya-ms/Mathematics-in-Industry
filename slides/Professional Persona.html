@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Professional Persona - Industrial Graphite</title>
+    <!-- Theme Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Lato:wght@300;400;700&family=Merriweather:wght@300;700;900&display=swap" rel="stylesheet">
+    <style>
+        /* --- THEME VARIABLES: INDUSTRIAL GRAPHITE --- */
+        :root {
+            --bg-color: #353b48;
+            --panel-bg: #2f3640;
+            --text-main: #f5f6fa;
+            --text-muted: #dcdde1;
+            
+            --accent-yellow: #e1b12c;
+            --accent-orange: #e67e22;
+
+            /* Specific Card Accents */
+            --c-cv: #bdc3c7;      /* Silver */
+            --c-li: #0984e3;      /* Blue */
+            --c-ai: #00b894;      /* Green */
+        }
+
+        body { 
+            background-color: var(--bg-color); 
+            font-family: 'Lato', sans-serif; 
+            margin: 0; 
+            height: 100vh; 
+            width: 100vw;
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        /* CANVAS BACKGROUND */
+        #idCanvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            opacity: 0.15; /* Subtle scan */
+        }
+
+        /* HEADER SECTION */
+        .header-section { 
+            text-align: center; 
+            margin-bottom: 5vh; 
+            z-index: 2; 
+            animation: fadeInDown 1s ease-out;
+        }
+        
+        h1 { 
+            font-family: 'Merriweather', serif;
+            font-size: 5vh; 
+            color: var(--accent-yellow); 
+            margin: 0; 
+            font-weight: 900; 
+            text-transform: uppercase; 
+            letter-spacing: -0.5px; 
+        }
+
+        .subtitle {
+            font-family: 'Fira Code', monospace; 
+            font-size: 2vh; 
+            color: var(--accent-orange); 
+            margin-top: 1vh;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        /* 3-COLUMN LAYOUT */
+        .container {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 2.5vw;
+            width: 95vw;
+            max-width: 1600px;
+            align-items: stretch;
+            z-index: 2;
+        }
+
+        /* CARD STYLING */
+        .card {
+            background: var(--panel-bg);
+            border-radius: 4px; 
+            padding: 3.5vh;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            border-top: 6px solid var(--accent);
+            border-bottom: 1px solid rgba(0,0,0,0.5);
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            position: relative;
+            opacity: 0;
+            transform: scale(0.9);
+            animation: popIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        .card:hover { 
+            transform: translateY(-8px) scale(1.02); 
+            box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+            background: #3d4652;
+            z-index: 10;
+        }
+
+        /* Focus Effect: Dim siblings on hover */
+        .container:hover .card:not(:hover) {
+            opacity: 0.6;
+            filter: blur(2px);
+            transform: scale(0.95);
+        }
+
+        .card-title {
+            font-family: 'Merriweather', serif;
+            font-size: 2.5vh; 
+            font-weight: 700; 
+            color: var(--text-main);
+            margin-bottom: 3vh; 
+            display: flex; 
+            align-items: center; 
+            gap: 1.5vh;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 1.5vh;
+        }
+
+        /* TIPS LIST */
+        .tips-list {
+            list-style: none; padding: 0; margin: 0;
+            display: flex; flex-direction: column; gap: 3vh;
+        }
+
+        .tip-item { display: flex; flex-direction: column; gap: 0.8vh; }
+
+        .tip-head {
+            font-size: 2vh; 
+            font-weight: 700; 
+            color: var(--accent); 
+            display: flex; 
+            align-items: center;
+        }
+
+        .tip-head::before {
+            content: '■'; 
+            color: var(--accent); 
+            font-size: 1.5vh; 
+            margin-right: 1.5vh;
+            opacity: 0.8;
+            animation: pulseBullet 2s infinite;
+        }
+
+        .tip-body {
+            font-size: 1.8vh; 
+            color: var(--text-muted); 
+            padding-left: 3vh; 
+            line-height: 1.5;
+            font-weight: 300;
+        }
+        
+        em { color: white; font-style: normal; font-weight: 600; border-bottom: 1px dotted white;}
+
+        /* HIGHLIGHT BOX */
+        .highlight-box {
+            margin-top: auto; 
+            padding: 2vh; 
+            border-radius: 4px;
+            background: rgba(0,0,0,0.3); 
+            font-size: 1.6vh; 
+            color: var(--accent);
+            font-family: 'Fira Code', monospace;
+            border-left: 3px solid var(--accent);
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.5);
+            line-height: 1.4;
+            min-height: 4em; /* Reserve space for typing */
+        }
+
+        /* ANIMATION DELAYS */
+        .card:nth-child(1) { animation-delay: 0.1s; }
+        .card:nth-child(2) { animation-delay: 0.3s; }
+        .card:nth-child(3) { animation-delay: 0.5s; }
+
+        @keyframes fadeInDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes popIn { from { opacity: 0; transform: scale(0.8) translateY(30px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+        @keyframes pulseBullet { 0%, 100% { opacity: 0.5; } 50% { opacity: 1; text-shadow: 0 0 5px currentColor; } }
+
+    </style>
+</head>
+<body>
+
+    <!-- Identity Scan Background -->
+    <canvas id="idCanvas"></canvas>
+
+    <div class="header-section">
+        <h1>The Professional Persona</h1>
+        <div class="subtitle">How to present yourself to industry</div>
+    </div>
+
+    <div class="container">
+        
+        <!-- 1. THE RESUME -->
+        <div class="card" style="--accent: var(--c-cv);">
+            <div class="card-title">📄 The Resume</div>
+            <ul class="tips-list">
+                <li class="tip-item">
+                    <div class="tip-head">The "Justify It" Rule</div>
+                    <div class="tip-body">
+                        Don't list a skill (e.g., "Optimization") if you can't explain the math behind it on a whiteboard.
+                    </div>
+                </li>
+                <li class="tip-item">
+                    <div class="tip-head">Projects > Certificates</div>
+                    <div class="tip-body">
+                        Recruiters care about what you have <em>built</em>, not just which videos you have watched.
+                    </div>
+                </li>
+            </ul>
+            <div class="highlight-box" id="type1"></div>
+        </div>
+
+        <!-- 2. LINKEDIN -->
+        <div class="card" style="--accent: var(--c-li);">
+            <div class="card-title">🌐 LinkedIn & Brand</div>
+            <ul class="tips-list">
+                <li class="tip-item">
+                    <div class="tip-head">Your Modern CV</div>
+                    <div class="tip-body">
+                        It's a living document. Post your academic achievements, hackathon wins, and project GitHub links.
+                    </div>
+                </li>
+                <li class="tip-item">
+                    <div class="tip-head">Active Networking</div>
+                    <div class="tip-body">
+                        Don't just add connections. Engage with Alumni and industry leaders. Be visible.
+                    </div>
+                </li>
+            </ul>
+            <div class="highlight-box" id="type2"></div>
+        </div>
+
+        <!-- 3. AI USAGE -->
+        <div class="card" style="--accent: var(--c-ai);">
+            <div class="card-title">🤖 Smart AI Usage</div>
+            <ul class="tips-list">
+                <li class="tip-item">
+                    <div class="tip-head">Co-Pilot, Not Autopilot</div>
+                    <div class="tip-body">
+                        Use ChatGPT to explain errors or suggest optimizations, not to write code from scratch.
+                    </div>
+                </li>
+                <li class="tip-item">
+                    <div class="tip-head">The "Why" Test</div>
+                    <div class="tip-body">
+                        If AI writes it, you must be able to debug it. Interviews test your logic, not your syntax.
+                    </div>
+                </li>
+            </ul>
+            <div class="highlight-box" id="type3"></div>
+        </div>
+
+    </div>
+
+    <!-- Live Scanner & Typewriter Script -->
+    <script>
+        // 1. SCANNER BACKGROUND
+        const canvas = document.getElementById('idCanvas');
+        const ctx = canvas.getContext('2d');
+        let width, height;
+        let scanY = 0;
+
+        function resize() {
+            width = window.innerWidth;
+            height = window.innerHeight;
+            canvas.width = width;
+            canvas.height = height;
+        }
+        window.addEventListener('resize', resize);
+        resize();
+
+        function drawScan() {
+            // Fade out previous frame slightly for trail effect
+            ctx.fillStyle = 'rgba(53, 59, 72, 0.1)';
+            ctx.fillRect(0, 0, width, height);
+
+            // Draw Grid
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.05)';
+            ctx.lineWidth = 1;
+            const gridSize = 50;
+            
+            // Only draw grid near scan line
+            for(let x = 0; x < width; x += gridSize) {
+                for(let y = 0; y < height; y += gridSize) {
+                    if(Math.abs(y - scanY) < 100) {
+                        ctx.strokeRect(x, y, gridSize, gridSize);
+                    }
+                }
+            }
+
+            // Draw Scan Line
+            ctx.beginPath();
+            ctx.moveTo(0, scanY);
+            ctx.lineTo(width, scanY);
+            ctx.strokeStyle = '#e1b12c'; // Yellow scan line
+            ctx.lineWidth = 2;
+            ctx.shadowBlur = 10;
+            ctx.shadowColor = '#e1b12c';
+            ctx.stroke();
+            ctx.shadowBlur = 0;
+
+            scanY += 2;
+            if(scanY > height) scanY = 0;
+
+            requestAnimationFrame(drawScan);
+        }
+        drawScan();
+
+
+        // 2. TYPEWRITER EFFECT FOR BOXES
+        const texts = [
+            "// A clean, honest 1-page CV beats a 3-page list of keywords every time.",
+            "// Networking isn't asking for favors. It's building relationships.",
+            "// Using AI to learn makes you faster. Using AI to cheat makes you weak."
+        ];
+        
+        const ids = ["type1", "type2", "type3"];
+
+        function typeWriter(text, elementId, delay) {
+            setTimeout(() => {
+                const element = document.getElementById(elementId);
+                let i = 0;
+                const speed = 30; // ms per char
+                
+                function type() {
+                    if (i < text.length) {
+                        element.innerHTML += text.charAt(i);
+                        i++;
+                        setTimeout(type, speed);
+                    }
+                }
+                type();
+            }, delay);
+        }
+
+        // Trigger typing after card animations
+        typeWriter(texts[0], ids[0], 800);
+        typeWriter(texts[1], ids[1], 1500);
+        typeWriter(texts[2], ids[2], 2200);
+
+    </script>
+
+</body>
+</html>

@@ -1,7 +1,9 @@
 # Math Career Guidance 2026 Presentation
 
-## How to Run
+For main presentaion file, run https://priya-ms.github.io/Mathematics-in-Industry/
 
+## How to Run
+ 
 1. Open `index.html` in your browser, or run a local server:
    ```bash
    python3 -m http.server

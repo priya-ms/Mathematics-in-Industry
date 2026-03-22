@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Math Career Guidance 2026</title>
     <style>
         :root {
@@ -20,6 +20,8 @@
             overflow: hidden;
             font-family: 'Fira Code', monospace;
             color: white;
+            /* Added: Prevents double-tap zoom on some mobile browsers */
+            touch-action: manipulation;
         }
 
         /* MAIN SLIDE AREA - Pushed up to clear footer */
@@ -35,6 +37,8 @@
             width: 100%; height: 100%;
             border: none;
             transition: opacity 0.3s ease;
+            /* Added: Ensures touches pass through to the main window if needed */
+            pointer-events: auto;
         }
 
         /* MERGED FOOTER SYSTEM */
@@ -48,7 +52,6 @@
             z-index: 1000;
             display: flex;
             flex-direction: column;
-            /* Added transition for smooth fade in/out */
             transition: opacity 0.5s ease;
         }
 
@@ -190,7 +193,6 @@
         progressBar.style.width = `${percent}%`;
         currentLabel.textContent = (currentIndex + 1).toString().padStart(2, '0');
 
-        // Logic to hide footer on Title page (index 0)
         if (currentIndex === 0) {
             footer.style.opacity = '0';
             footer.style.pointerEvents = 'none';
@@ -200,6 +202,7 @@
         }
     }
 
+    /* KEYBOARD NAVIGATION */
     window.addEventListener('keydown', (e) => {
         if (["ArrowRight", " ", "PageDown", "n"].includes(e.key)) {
             e.preventDefault();
@@ -215,6 +218,19 @@
             loadSlide(0);
         }
     });
+
+    /* MOBILE TOUCH NAVIGATION */
+    // Added: Detects a tap on the right 50% of the screen to go next, left 50% for back
+    document.addEventListener('touchstart', (e) => {
+        const touchX = e.touches[0].clientX;
+        const screenWidth = window.innerWidth;
+
+        if (touchX > screenWidth / 2) {
+            loadSlide(currentIndex + 1);
+        } else {
+            loadSlide(currentIndex - 1);
+        }
+    }, false);
 
     window.addEventListener('message', (e) => {
         const requestedSlide = e.data;

@@ -20,12 +20,12 @@
             overflow: hidden;
             font-family: 'Fira Code', monospace;
             color: white;
-            /* Added: Prevents double-tap zoom on some mobile browsers */
-            touch-action: manipulation;
+            touch-action: none; /* Prevents browser from scrolling/zooming */
         }
 
-        /* MAIN SLIDE AREA - Pushed up to clear footer */
+        /* MAIN SLIDE AREA */
         #slide-wrapper {
+            position: relative;
             width: 100vw;
             height: calc(100vh - var(--footer-height));
             display: flex;
@@ -33,15 +33,22 @@
             justify-content: center;
         }
 
+        /* NEW: Invisible overlay to capture touches on mobile/laptop */
+        #touch-overlay {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 500;
+            background: transparent;
+        }
+
         iframe {
             width: 100%; height: 100%;
             border: none;
             transition: opacity 0.3s ease;
-            /* Added: Ensures touches pass through to the main window if needed */
-            pointer-events: auto;
         }
 
-        /* MERGED FOOTER SYSTEM */
+        /* FOOTER SYSTEM */
         #footer-container {
             position: fixed;
             bottom: 0; left: 0;
@@ -55,7 +62,6 @@
             transition: opacity 0.5s ease;
         }
 
-        /* PROGRESS BAR MOVED TO BOTTOM (TOP OF FOOTER) */
         #progress-container {
             width: 100%;
             height: var(--bar-height);
@@ -71,16 +77,6 @@
             position: relative;
         }
 
-        #progress-bar::after {
-            content: '';
-            position: absolute;
-            right: 0; top: 0;
-            height: 100%; width: 4px;
-            background: #fff;
-            box-shadow: 0 0 10px #fff;
-        }
-
-        /* FOOTER CONTENT AREA */
         #footer-content {
             flex: 1;
             display: flex;
@@ -89,27 +85,13 @@
             padding: 0 25px;
             font-size: 14px;
             color: var(--accent-orange);
-            letter-spacing: 1px;
         }
 
-        .footer-left {
-            color: var(--accent-orange);
-            font-weight: 400;
-            text-transform: uppercase;
-        }
-
-        .footer-center {
-            opacity: 1.0;
-            font-size: 14px;
-        }
-
-        /* INTEGRATED SLIDE COUNTER */
         #slide-info {
             display: flex;
             align-items: baseline;
             gap: 4px;
             color: var(--text-muted);
-            font-family: 'Fira Code', monospace;
         }
 
         #current-num { color: var(--accent-yellow); font-weight: 700; font-size: 20px; }
@@ -120,6 +102,7 @@
 <body>
 
     <div id="slide-wrapper">
+        <div id="touch-overlay"></div>
         <iframe id="slide-frame" src="slides/Title.html" title="Presentation Slide"></iframe>
     </div>
 
@@ -127,14 +110,9 @@
         <div id="progress-container">
             <div id="progress-bar"></div>
         </div>
-        
         <div id="footer-content">
             <div class="footer-left">Mathematics in Industry</div>
-            
-            <div class="footer-center">
-                Priyanka Magar-Sawant | PhD, Mathematics (IIT Bombay Alumnus)
-            </div>
-
+            <div class="footer-center">Priyanka Magar-Sawant | PhD, Mathematics</div>
             <div id="slide-info">
                 <span id="current-num">01</span>
                 <span id="total-num">/ 00</span>
@@ -142,25 +120,8 @@
         </div>
     </div>
 
-    <script>
-    const slides = [
-        "Title.html",
-        "Motivation.html",
-        "CurrentWork.html",
-        "CareerCoordinates.html",
-        "AI_architect.html",
-        "Guardian.html",
-        "Simulator.html",
-        "Optimizer.html",
-        "Predictor.html",
-        "Strategist.html",
-        "Government Services.html",
-        "MathClouds.html",
-        "ResourceHub.html",
-        "Resources & Strategy.html",
-        "Professional Persona.html",
-        "ConcludingSlide.html"
-    ];
+<script>
+    const slides = ["Title.html", "Motivation.html", "CurrentWork.html", "CareerCoordinates.html", "AI_architect.html", "Guardian.html", "Simulator.html", "Optimizer.html", "Predictor.html", "Strategist.html", "Government Services.html", "MathClouds.html", "ResourceHub.html", "Resources & Strategy.html", "Professional Persona.html", "ConcludingSlide.html"];
     
     let currentIndex = 0;
     const frame = document.getElementById('slide-frame');
@@ -168,23 +129,18 @@
     const currentLabel = document.getElementById('current-num');
     const totalLabel = document.getElementById('total-num');
     const footer = document.getElementById('footer-container');
+    const overlay = document.getElementById('touch-overlay');
 
     totalLabel.textContent = `/ ${slides.length.toString().padStart(2, '0')}`;
 
     function loadSlide(index) {
         if (index < 0 || index >= slides.length) return;
-        
         currentIndex = index;
         frame.style.opacity = '0';
-        
         setTimeout(() => {
             frame.src = `slides/${slides[currentIndex]}`;
             updateUI();
-            
-            frame.onload = () => { 
-                frame.style.opacity = '1'; 
-                window.focus(); 
-            };
+            frame.onload = () => { frame.style.opacity = '1'; };
         }, 200);
     }
 
@@ -192,54 +148,39 @@
         const percent = ((currentIndex + 1) / slides.length) * 100;
         progressBar.style.width = `${percent}%`;
         currentLabel.textContent = (currentIndex + 1).toString().padStart(2, '0');
-
-        if (currentIndex === 0) {
-            footer.style.opacity = '0';
-            footer.style.pointerEvents = 'none';
-        } else {
-            footer.style.opacity = '1';
-            footer.style.pointerEvents = 'auto';
-        }
+        if (currentIndex === 0) { footer.style.opacity = '0'; } else { footer.style.opacity = '1'; }
     }
 
-    /* KEYBOARD NAVIGATION */
+    /* 1. KEYBOARD NAV (For Laptop) */
     window.addEventListener('keydown', (e) => {
-        if (["ArrowRight", " ", "PageDown", "n"].includes(e.key)) {
-            e.preventDefault();
-            loadSlide(currentIndex + 1);
-        }
-        
-        if (["ArrowLeft", "PageUp", "Backspace", "p"].includes(e.key)) {
-            e.preventDefault();
-            loadSlide(currentIndex - 1);
-        }
-
-        if (e.key === "Escape" || e.key === "Home") {
-            loadSlide(0);
-        }
+        if (["ArrowRight", " ", "PageDown", "n"].includes(e.key)) loadSlide(currentIndex + 1);
+        if (["ArrowLeft", "PageUp", "Backspace", "p"].includes(e.key)) loadSlide(currentIndex - 1);
     });
 
-    /* MOBILE TOUCH NAVIGATION */
-    // Added: Detects a tap on the right 50% of the screen to go next, left 50% for back
-    document.addEventListener('touchstart', (e) => {
-        const touchX = e.touches[0].clientX;
-        const screenWidth = window.innerWidth;
+    /* 2. TOUCH NAV (For Phone) - SWIPE DETECTION */
+    let touchstartX = 0;
+    let touchendX = 0;
 
-        if (touchX > screenWidth / 2) {
-            loadSlide(currentIndex + 1);
-        } else {
-            loadSlide(currentIndex - 1);
-        }
+    overlay.addEventListener('touchstart', e => {
+        touchstartX = e.changedTouches[0].screenX;
     }, false);
 
-    window.addEventListener('message', (e) => {
-        const requestedSlide = e.data;
-        const newIndex = slides.indexOf(requestedSlide);
-        if (newIndex !== -1) loadSlide(newIndex);
+    overlay.addEventListener('touchend', e => {
+        touchendX = e.changedTouches[0].screenX;
+        handleGesture();
+    }, false);
+
+    function handleGesture() {
+        if (touchendX < touchstartX - 50) loadSlide(currentIndex + 1); // Swipe Left -> Next
+        if (touchendX > touchstartX + 50) loadSlide(currentIndex - 1); // Swipe Right -> Prev
+    }
+
+    /* 3. CLICK NAV (For Laptop Mouse) */
+    overlay.addEventListener('click', (e) => {
+        if (e.clientX > window.innerWidth / 2) loadSlide(currentIndex + 1);
+        else loadSlide(currentIndex - 1);
     });
 
-    document.addEventListener('click', () => window.focus());
-    
     updateUI();
 </script>
 </body>

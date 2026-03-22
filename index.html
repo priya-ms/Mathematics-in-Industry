@@ -20,7 +20,6 @@
             overflow: hidden;
             font-family: 'Fira Code', monospace;
             color: white;
-            /* Prevents system gestures from interfering with slide navigation */
             touch-action: none;
             overscroll-behavior: none;
         }
@@ -35,22 +34,21 @@
             z-index: 1;
         }
 
-        /* THE CONTROL LAYER: High Z-index ensures it catches all inputs */
+        /* FIXED: Height 80vh ensures the footer buttons are always clickable */
         #touch-overlay {
             position: absolute;
             top: 0; left: 0;
-            width: 100%; height: 100%;
+            width: 100%; height: 80vh;
             z-index: 100;
             background: rgba(0,0,0,0); 
             cursor: pointer;
-            pointer-events: auto; /* Explicitly catch all events */
+            pointer-events: auto;
         }
 
         iframe {
             width: 100%; height: 100%;
             border: none;
             transition: opacity 0.3s ease;
-            /* CRITICAL: Passes the touch/click through to the overlay */
             pointer-events: none; 
             z-index: 50;
         }
@@ -62,10 +60,11 @@
             height: var(--footer-height);
             background: rgba(0, 0, 0, 0.8);
             backdrop-filter: blur(10px);
-            z-index: 200;
+            z-index: 200; /* Above the touch overlay */
             display: flex;
             flex-direction: column;
             transition: opacity 0.5s ease;
+            pointer-events: auto;
         }
 
         #progress-container {
@@ -100,7 +99,6 @@
 
         #current-num { color: var(--accent-yellow); font-weight: 700; font-size: 18px; }
         #total-num { opacity: 0.5; font-size: 18px; }
-
     </style>
 </head>
 <body>
@@ -155,31 +153,24 @@
         footer.style.opacity = (currentIndex === 0) ? '0' : '1';
     }
 
-    /* 1. LAPTOP: Keyboard Controls */
     window.addEventListener('keydown', (e) => {
         if (["ArrowRight", " ", "PageDown", "n"].includes(e.key)) loadSlide(currentIndex + 1);
         if (["ArrowLeft", "PageUp", "Backspace", "p"].includes(e.key)) loadSlide(currentIndex - 1);
         if (e.key === "Escape" || e.key === "Home") loadSlide(0);
     });
 
-    /* 2. LAPTOP/IPAD: Tap/Click Controls (Split Screen) */
     overlay.addEventListener('mousedown', (e) => {
         const screenWidth = window.innerWidth;
         if (e.clientX > screenWidth / 2) loadSlide(currentIndex + 1);
         else loadSlide(currentIndex - 1);
     });
 
-    /* 3. MOBILE/IPAD: Swipe Controls */
     let startX = 0;
-    overlay.addEventListener('touchstart', e => { 
-        startX = e.touches[0].clientX; 
-    }, {passive: true});
-
+    overlay.addEventListener('touchstart', e => { startX = e.touches[0].clientX; }, {passive: true});
     overlay.addEventListener('touchend', e => {
         let endX = e.changedTouches[0].clientX;
-        let threshold = 40; // Pixels required to trigger a swipe
-        if (startX - endX > threshold) loadSlide(currentIndex + 1); // Swipe Left
-        if (endX - startX > threshold) loadSlide(currentIndex - 1); // Swipe Right
+        if (startX - endX > 40) loadSlide(currentIndex + 1);
+        if (endX - startX > 40) loadSlide(currentIndex - 1);
     }, {passive: true});
 
     updateUI();

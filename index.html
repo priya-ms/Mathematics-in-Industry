@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Math Career Guidance 2026</title>
     <style>
         :root {
@@ -20,9 +20,9 @@
             overflow: hidden;
             font-family: 'Fira Code', monospace;
             color: white;
-            /* Added: Stops the phone from trying to "pull to refresh" */
-            overscroll-behavior-y: contain;
+            /* Prevents system gestures from interfering with slide navigation */
             touch-action: none;
+            overscroll-behavior: none;
         }
 
         #slide-wrapper {
@@ -32,24 +32,27 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            z-index: 1;
         }
 
-        /* NEW: This layer is now the ONLY thing that sees touches */
+        /* THE CONTROL LAYER: High Z-index ensures it catches all inputs */
         #touch-overlay {
             position: absolute;
             top: 0; left: 0;
             width: 100%; height: 100%;
-            z-index: 2000;
-            background: rgba(0,0,0,0); /* Invisible but present */
+            z-index: 100;
+            background: rgba(0,0,0,0); 
             cursor: pointer;
+            pointer-events: auto; /* Explicitly catch all events */
         }
 
         iframe {
             width: 100%; height: 100%;
             border: none;
             transition: opacity 0.3s ease;
-            /* Added: Tells the phone to ignore touches on the iframe itself */
-            pointer-events: none;
+            /* CRITICAL: Passes the touch/click through to the overlay */
+            pointer-events: none; 
+            z-index: 50;
         }
 
         #footer-container {
@@ -57,9 +60,9 @@
             bottom: 0; left: 0;
             width: 100%;
             height: var(--footer-height);
-            background: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(5px);
-            z-index: 3000;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            z-index: 200;
             display: flex;
             flex-direction: column;
             transition: opacity 0.5s ease;
@@ -68,25 +71,15 @@
         #progress-container {
             width: 100%;
             height: var(--bar-height);
-            background: rgba(255, 255, 255, 0.05);
+            background: rgba(255, 255, 255, 0.1);
         }
 
         #progress-bar {
             height: 100%;
             width: 0%;
             background: linear-gradient(to right, var(--accent-orange), var(--accent-yellow));
-            box-shadow: 0 0 10px rgba(251, 197, 49, 0.3);
-            transition: width 0.8s cubic-bezier(0.22, 1, 0.36, 1);
-            position: relative;
-        }
-
-        #progress-bar::after {
-            content: '';
-            position: absolute;
-            right: 0; top: 0;
-            height: 100%; width: 4px;
-            background: #fff;
-            box-shadow: 0 0 10px #fff;
+            box-shadow: 0 0 10px rgba(251, 197, 49, 0.4);
+            transition: width 0.6s cubic-bezier(0.22, 1, 0.36, 1);
         }
 
         #footer-content {
@@ -94,25 +87,19 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 0 25px;
-            font-size: 14px;
+            padding: 0 20px;
+            font-size: 13px;
             color: var(--accent-orange);
-            letter-spacing: 1px;
         }
-
-        .footer-left { color: var(--accent-orange); font-weight: 400; text-transform: uppercase; }
-        .footer-center { opacity: 1.0; font-size: 14px; }
 
         #slide-info {
             display: flex;
             align-items: baseline;
             gap: 4px;
-            color: var(--text-muted);
-            font-family: 'Fira Code', monospace;
         }
 
-        #current-num { color: var(--accent-yellow); font-weight: 700; font-size: 20px; }
-        #total-num { opacity: 0.5; font-size: 20px; }
+        #current-num { color: var(--accent-yellow); font-weight: 700; font-size: 18px; }
+        #total-num { opacity: 0.5; font-size: 18px; }
 
     </style>
 </head>
@@ -137,7 +124,7 @@
         </div>
     </div>
 
-    <script>
+<script>
     const slides = ["Title.html", "Motivation.html", "CurrentWork.html", "CareerCoordinates.html", "AI_architect.html", "Guardian.html", "Simulator.html", "Optimizer.html", "Predictor.html", "Strategist.html", "Government Services.html", "MathClouds.html", "ResourceHub.html", "Resources & Strategy.html", "Professional Persona.html", "ConcludingSlide.html"];
     
     let currentIndex = 0;
@@ -158,44 +145,42 @@
             frame.src = `slides/${slides[currentIndex]}`;
             updateUI();
             frame.onload = () => { frame.style.opacity = '1'; };
-        }, 200);
+        }, 150);
     }
 
     function updateUI() {
         const percent = ((currentIndex + 1) / slides.length) * 100;
         progressBar.style.width = `${percent}%`;
         currentLabel.textContent = (currentIndex + 1).toString().padStart(2, '0');
-        if (currentIndex === 0) { footer.style.opacity = '0'; } else { footer.style.opacity = '1'; }
+        footer.style.opacity = (currentIndex === 0) ? '0' : '1';
     }
 
-    /* KEYBOARD NAV */
+    /* 1. LAPTOP: Keyboard Controls */
     window.addEventListener('keydown', (e) => {
         if (["ArrowRight", " ", "PageDown", "n"].includes(e.key)) loadSlide(currentIndex + 1);
         if (["ArrowLeft", "PageUp", "Backspace", "p"].includes(e.key)) loadSlide(currentIndex - 1);
         if (e.key === "Escape" || e.key === "Home") loadSlide(0);
     });
 
-    /* MOBILE TAP NAVIGATION */
-    overlay.addEventListener('click', (e) => {
+    /* 2. LAPTOP/IPAD: Tap/Click Controls (Split Screen) */
+    overlay.addEventListener('mousedown', (e) => {
         const screenWidth = window.innerWidth;
         if (e.clientX > screenWidth / 2) loadSlide(currentIndex + 1);
         else loadSlide(currentIndex - 1);
     });
 
-    /* MOBILE SWIPE NAVIGATION */
+    /* 3. MOBILE/IPAD: Swipe Controls */
     let startX = 0;
-    overlay.addEventListener('touchstart', e => { startX = e.touches[0].clientX; }, {passive: true});
-    overlay.addEventListener('touchend', e => {
-        let endX = e.changedTouches[0].clientX;
-        if (startX - endX > 50) loadSlide(currentIndex + 1);
-        if (endX - startX > 50) loadSlide(currentIndex - 1);
+    overlay.addEventListener('touchstart', e => { 
+        startX = e.touches[0].clientX; 
     }, {passive: true});
 
-    window.addEventListener('message', (e) => {
-        const requestedSlide = e.data;
-        const newIndex = slides.indexOf(requestedSlide);
-        if (newIndex !== -1) loadSlide(newIndex);
-    });
+    overlay.addEventListener('touchend', e => {
+        let endX = e.changedTouches[0].clientX;
+        let threshold = 40; // Pixels required to trigger a swipe
+        if (startX - endX > threshold) loadSlide(currentIndex + 1); // Swipe Left
+        if (endX - startX > threshold) loadSlide(currentIndex - 1); // Swipe Right
+    }, {passive: true});
 
     updateUI();
 </script>
